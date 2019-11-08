@@ -1,0 +1,4 @@
+data job posts.csv
+.ipynb_checkpoints
+__pycache__
+*.ipynb
