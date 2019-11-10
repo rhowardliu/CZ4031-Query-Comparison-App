@@ -1,6 +1,50 @@
 import queue
 import pdb
 
+class Cluster(object):
+  """docstring for Cluster"""
+  def __init__(self, clusterSet):
+    super(Cluster, self).__init__()
+    self.cluster = []
+    for node in clusterSet:
+      if node.parent in self.cluster:
+        parent_index = self.cluster.index(node.parent)
+        self.cluster.insert(parent_index+1, node)
+        continue
+      if node.children:
+        if len(node.children) == 2:
+          if node.children[0] and node.children[1] in self.cluster:
+            bigger_index = max(self.cluster.index(node.children[0]), self.cluster.index(node. children[1]))
+            smaller_index = min(self.cluster.index(node.children[0]), self.cluster.index(node. children[1]))
+            bigchild = self.cluster[bigger_index]
+            self.cluster.remove(bigchild)
+            self.cluster.insert(smaller_index, bigchild)
+            self.cluster.insert(smaller_index, node)
+            continue
+          elif node.children[1] in self.cluster:
+            child_index = self.cluster.index(node.children[0])
+            self.cluster.insert(child_index, node)
+            continue
+        if node.children[0] in self.cluster:
+          child_index = self.cluster.index(node.children[0])
+          self.cluster.insert(child_index, node)
+          continue
+      self.cluster.append(node)
+
+  def __str__(self):
+    return ','.join(map(str, self.cluster))
+
+  def __eq__(self, other):
+    if isinstance(other, self.__class__):
+        return self.cluster == other.cluster
+    else:
+      return False
+
+  def __len__(self):
+    return len(self.cluster)
+
+
+
 def get_cluster(a, b, cluster_grp):
   if a!=b:
     return cluster_grp
@@ -30,6 +74,8 @@ def parse_tree(A_root, B_root):
   while A_queue.qsize()!=0:
     a = A_queue.get()
     for child in a.children:
+      if not child.parent:
+        child.parent = a
       A_queue.put(child)
     if a.visited == True:
       continue
@@ -38,6 +84,8 @@ def parse_tree(A_root, B_root):
     while B_queue.qsize()!=0:
       b = B_queue.get()
       for child in b.children:
+        if not child.parent:
+          child.parent = b
         B_queue.put(child)
       if b.visited == True:
         continue
