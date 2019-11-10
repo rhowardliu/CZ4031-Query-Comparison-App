@@ -1,5 +1,6 @@
 import unittest
 from tree_parsing import *
+from cluster import Cluster
 
 
 
@@ -113,6 +114,7 @@ class TreeParseTest(unittest.TestCase):
     correct_cluster = Cluster(set([node_a3, node_a1, node_a5, node_a2]))
     my_cluster = Cluster(get_cluster(node_a1, node_b1, set()))
     self.assertEqual(correct_cluster, my_cluster)
+    self.assertEqual(len(my_cluster), 4)
 
 
 
