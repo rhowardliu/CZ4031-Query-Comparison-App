@@ -2,7 +2,7 @@ import queue
 import pdb
 from cluster import Cluster
 
-def get_cluster(a, b, cluster_grp):
+def get_cluster_set(a, b, cluster_grp):
   if a!=b:
     return cluster_grp
   if a.children and b.children:
@@ -10,14 +10,14 @@ def get_cluster(a, b, cluster_grp):
     b_set = {x for x in b.children}
     if a_set == b_set:
       if len(a_set) == 1:
-        cluster_grp = cluster_grp.union(get_cluster(a.children[0], b.children[0], set()))
+        cluster_grp = cluster_grp.union(get_cluster_set(a.children[0], b.children[0], set()))
       else:
         if a.children[0] == b.children[0]:
-          cluster_1 = get_cluster(a.children[0], b.children[0], set())
-          cluster_2 = get_cluster(a.children[1], b.children[1], set())
+          cluster_1 = get_cluster_set(a.children[0], b.children[0], set())
+          cluster_2 = get_cluster_set(a.children[1], b.children[1], set())
         else:
-          cluster_1 = get_cluster(a.children[0], b.children[1], set())
-          cluster_2 = get_cluster(a.children[1], b.children[0], set())
+          cluster_1 = get_cluster_set(a.children[0], b.children[1], set())
+          cluster_2 = get_cluster_set(a.children[1], b.children[0], set())
         cluster_grp = cluster_grp.union(cluster_1, cluster_2)
   cluster_grp.add(a)  
   a.visited=True
@@ -46,9 +46,15 @@ def parse_tree(A_root, B_root):
         B_queue.put(child)
       if b.visited == True:
         continue
-      cluster_grp = get_cluster(a, b, set())
-      if cluster_grp:
-        clusters.append(Cluster(cluster_grp))
-        break
+      cluster_set = get_cluster_set(a, b, set())
+      if cluster_set:
+        clustered = Cluster(cluster_set)
+        clusters.append(clustered)
   return clusters
 
+def create_cluster_dict(clusters):
+  cluster_dic = {}
+  for i in range(len(clusters)):
+    for node in clusters[i]:
+      cluster_dic[node] = i
+  return cluster_dic
