@@ -1,6 +1,6 @@
 import queue
 import pdb
-from cluster import Cluster
+from cluster_class import Cluster
 
 def get_cluster_set(a, b, cluster_grp):
   if a!=b:

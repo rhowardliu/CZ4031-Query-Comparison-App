@@ -1,6 +1,6 @@
 import unittest
 from tree_parsing import *
-from cluster import Cluster
+from cluster_class import Cluster
 
 
 
