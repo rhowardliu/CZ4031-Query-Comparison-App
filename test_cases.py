@@ -89,8 +89,8 @@ class TreeParseTest(unittest.TestCase):
     cluster3 = set([node_a6])
     correct_clusters = [cluster1, cluster2, cluster3]
     my_cluster = parse_tree(node_a1, node_b1)
-    # print_clusters(my_cluster)
-    self.assertEqual(correct_clusters, my_cluster)
+    my_cluster_sets = [c.clusterSet for c in my_cluster]
+    self.assertEqual(correct_clusters, my_cluster_sets)
 
   def testClusterObject(self):
     node_a1 = Node('merge_join', 'id')
@@ -120,7 +120,6 @@ class TreeParseTest(unittest.TestCase):
 
 if __name__ == '__main__':
   unittest.main()
-  TreeParseTest().testClusterObject()
 
 
     
