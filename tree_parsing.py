@@ -1,5 +1,6 @@
 import queue
 import pdb
+from cluster import Cluster
 
 def get_cluster(a, b, cluster_grp):
   if a!=b:
@@ -45,9 +46,9 @@ def parse_tree(A_root, B_root):
         B_queue.put(child)
       if b.visited == True:
         continue
-      cluster = get_cluster(a, b, set())
-      if cluster:
-        clusters.append(cluster)
+      cluster_grp = get_cluster(a, b, set())
+      if cluster_grp:
+        clusters.append(Cluster(cluster_grp))
         break
   return clusters
 
