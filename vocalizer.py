@@ -12,9 +12,9 @@ import queue
 # from nlp import handler
 
 class Node(object):
-    def __init__(self, node_type, relation_name, schema, alias, group_key, sort_key, join_type, index_name, 
-            hash_cond, table_filter, index_cond, merge_cond, recheck_cond, join_filter, subplan_name, actual_rows,
-            actual_time):
+    def __init__(self, node_type, group_key, sort_key=None, relation_name=None, schema=None, alias=None,  join_type=None, index_name=None, 
+            hash_cond=None, table_filter=None, index_cond=None, merge_cond=None, recheck_cond=None, join_filter=None, subplan_name=None, actual_rows=None,
+            actual_time=None):
         self.node_type = node_type
         self.children = []
         self.relation_name = relation_name
@@ -33,6 +33,9 @@ class Node(object):
         self.subplan_name = subplan_name
         self.actual_rows = actual_rows
         self.actual_time = actual_time
+        # extra
+        self.visited = False
+        self.parent = None
 
     def add_children(self, child):
         self.children.append(child)
@@ -51,6 +54,20 @@ class Node(object):
 
     def set_step(self, step):
         self.step = step
+
+    ## extra
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return self.node_type == other.node_type and self.group_key == other.group_key \
+            and self.sort_key == other.sort_key 
+        else:
+            return False
+
+    def __hash__(self):
+        return hash((self.node_type, self.group_key, self.sort_key))
+
+    def __str__(self):
+        return f"{str(self.node_type)} on {str(self.group_key)} and {str(self.sort_key)}"
 
 # Phase 1
 def parse_json(json_obj):

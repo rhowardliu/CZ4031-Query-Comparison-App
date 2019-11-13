@@ -2,6 +2,17 @@ import queue
 import pdb
 from cluster_class import Cluster
 
+def level_traversal(root, level, all_nodes):
+  if root is None:
+    return
+  if level >= len(all_nodes):
+    new_level = []
+    all_nodes.append(new_level)
+  all_nodes[level].append(root)
+  for child in root.children:
+    level_traversal(child,level+1,all_nodes )
+
+
 def get_cluster_set(a, b, cluster_grp):
   if a!=b:
     return cluster_grp
@@ -9,6 +20,7 @@ def get_cluster_set(a, b, cluster_grp):
     a_set = {x for x in a.children}
     b_set = {x for x in b.children}
     if a_set == b_set:
+    # no banana so ok!
       if len(a_set) == 1:
         cluster_grp = cluster_grp.union(get_cluster_set(a.children[0], b.children[0], set()))
       else:
@@ -58,3 +70,15 @@ def create_cluster_dict(clusters):
     for node in clusters[i]:
       cluster_dic[node] = i
   return cluster_dic
+
+
+def get_tree_differences(root, cluster_dict):
+  all_nodes = [] 
+  diff_nodes = []
+  level_traversal(root, 0, all_nodes)
+  for i in range(len(all_nodes)):
+    for node in all_nodes[i]:
+      if node not in cluster_dict.keys():
+        diff_nodes.append(node)
+  return diff_nodes
+         

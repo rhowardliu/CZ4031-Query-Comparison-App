@@ -7,7 +7,6 @@ class Cluster(object):
     self.head = self.getHead()
     self.leaves = self.getLeaves()
 
-
   def getLeaves(self):
     leaves = []
     for node in self.clusterSet:
@@ -55,7 +54,7 @@ class Cluster(object):
 
 
   def __str__(self):
-    return ','.join(map(str, self.clusterSet))
+    return ', '.join(map(str, self.clusterSet))
 
   def __eq__(self, other):
     if isinstance(other, self.__class__):
