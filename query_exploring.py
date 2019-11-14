@@ -3,17 +3,19 @@ import vocalizer as v
 
 
 def printNode(node):
-  print('#### printNode')
-  for key in node.__dict__:
-    print("{key}='{value}'".format(key=key, value=node.__dict__[key]))
-  
+    print('#### printNode')
+    for key in node.__dict__:
+        print("{key}='{value}'".format(key=key, value=node.__dict__[key]))
+    
+    
 def printNodeType(node):
-  print(node.node_type)
+    print(node.node_type)
 
 
 def printNLP(json):
-  for line in v.get_text(json):
-    print(line)
+    for line in v.get_text(json):
+        print(line)
+
 
 root = v.parse_json(sr.q3)
 root = v.simplify_graph(root)

@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import control
 
+
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
@@ -100,7 +101,6 @@ class Ui_Dialog(object):
         query2 = self.textEdit.toPlainText()
         diff_string = self.my_control.generate_differences(query1, query2)
         self.textBrowser_3.setText(diff_string)
-
 
 
 if __name__ == "__main__":

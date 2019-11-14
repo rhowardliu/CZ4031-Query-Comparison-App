@@ -1,20 +1,19 @@
 from __future__ import print_function
-import logging
-import json
+# import logging
+# import json
 import argparse
 import copy
 # from gtts import gTTS
-import random, string
+# import random, string
 from util import parse_cond
 # import pygame
-import os
+# import os
 import queue
 # from nlp import handler
 
+
 class Node(object):
-    def __init__(self, node_type, group_key, sort_key=None, relation_name=None, schema=None, alias=None,  join_type=None, index_name=None, 
-            hash_cond=None, table_filter=None, index_cond=None, merge_cond=None, recheck_cond=None, join_filter=None, subplan_name=None, actual_rows=None,
-            actual_time=None):
+    def __init__(self, node_type, group_key, sort_key=None, relation_name=None, schema=None, alias=None, join_type=None, index_name=None, hash_cond=None, table_filter=None, index_cond=None, merge_cond=None, recheck_cond=None, join_filter=None, subplan_name=None, actual_rows=None, actual_time=None):
         self.node_type = node_type
         self.children = []
         self.relation_name = relation_name
@@ -56,12 +55,13 @@ class Node(object):
     def set_step(self, step):
         self.step = step
 
-    ## extra
+    # extra
     def __eq__(self, other):
         # checks
-        attributes_to_compare = ['node_type', 'relation_name', 'group_key', \
-            'sort_key', 'join_type', 'index_name', 'hash_cond', 'table_filter', \
-            'merge_cond', 'recheck_cond', 'join_filter', 'partial_mode']
+        attributes_to_compare = [
+            'node_type', 'relation_name', 'group_key', 'sort_key', 'join_type', 'index_name',
+            'hash_cond', 'table_filter', 'merge_cond', 'recheck_cond', 'join_filter', 'partial_mode'
+        ]
 
         for attribute in attributes_to_compare:
             if getattr(self, attribute) != getattr(other, attribute):
@@ -70,9 +70,10 @@ class Node(object):
         return True
 
     def __hash__(self):
-        attributes = ['node_type', 'relation_name', 'group_key', \
-            'sort_key', 'join_type', 'index_name', 'hash_cond', 'table_filter', \
-            'merge_cond', 'recheck_cond', 'join_filter', 'partial_mode']
+        attributes = [
+            'node_type', 'relation_name', 'group_key', 'sort_key', 'join_type', 'index_name',
+            'hash_cond', 'table_filter', 'merge_cond', 'recheck_cond', 'join_filter', 'partial_mode'
+        ]
         
         hash_list = []
         for attr in attributes:
@@ -160,6 +161,7 @@ class Node(object):
 
         return s
         
+
 # Phase 1
 def parse_json(json_obj):
     q = queue.Queue()
@@ -212,9 +214,11 @@ def parse_json(json_obj):
             else:
                 subplan_name = current_plan['Subplan Name']
 
-        current_node = Node(current_plan['Node Type'],  group_key, sort_key, relation_name, schema, alias, join_type,
-                            index_name, hash_cond, table_filter, index_cond, merge_cond, recheck_cond, join_filter,
-                            subplan_name, actual_rows, actual_time)
+        current_node = Node(
+            current_plan['Node Type'], group_key, sort_key, relation_name, schema, alias, join_type,
+            index_name, hash_cond, table_filter, index_cond, merge_cond, recheck_cond, join_filter,
+            subplan_name, actual_rows, actual_time
+        )
 
         if "Limit" == current_node.node_type:
             current_node.plan_rows = current_plan['Plan Rows']
@@ -245,6 +249,7 @@ def parse_json(json_obj):
 
     return head_node
 
+
 # Phase 2
 def simplify_graph(node):
     new_node = copy.deepcopy(node)
@@ -259,6 +264,7 @@ def simplify_graph(node):
         return node.children[0]
 
     return new_node
+
 
 # Phase 3
 def to_text(node, skip=False):
@@ -342,9 +348,9 @@ def to_text(node, skip=False):
 
     elif "Scan" in node.node_type:
         if node.node_type == "Seq Scan":
-            step += "sequential scan on table "         
+            step += "sequential scan on table "
         else:
-            step += "" + node.node_type.lower() + " on table " 
+            step += "" + node.node_type.lower() + " on table "
 
         step += node.get_output_name()
 
@@ -356,9 +362,9 @@ def to_text(node, skip=False):
         # combine unique and sort
         if "Sort" in node.children[0].node_type:
             node.children[0].set_output_name(node.children[0].children[0].get_output_name())
-            step = "sort " + node.children[0].get_output_name() 
+            step = "sort " + node.children[0].get_output_name()
             if node.children[0].sort_key:
-                step += " with attribute " + parse_cond("Sort Key", node.children[0].sort_key, table_subquery_name_pair) +  " and "
+                step += " with attribute " + parse_cond("Sort Key", node.children[0].sort_key, table_subquery_name_pair) + " and "
             else:
                 step += " and "
 
@@ -377,12 +383,12 @@ def to_text(node, skip=False):
                 else:
                     step = "" + child.node_type.lower() + " on " + child.get_output_name() + " and "
 
-        step += "aggregate on table " + node.children[0].get_output_name() 
+        step += "aggregate on table " + node.children[0].get_output_name()
         if len(node.children) == 2:
             step += " and table " + node.children[1].get_output_name()
 
     elif node.node_type == "Sort":
-        step += "sort on table " + node.children[0].get_output_name() + " with attribute " + parse_cond("Sort Key", node.sort_key, table_subquery_name_pair) 
+        step += "sort on table " + node.children[0].get_output_name() + " with attribute " + parse_cond("Sort Key", node.sort_key, table_subquery_name_pair)
 
     elif node.node_type == "Limit":
         step += "limit the result from table " + node.children[0].get_output_name() + " to " + str(node.plan_rows) + " record(s)"
@@ -402,11 +408,11 @@ def to_text(node, skip=False):
 
     # add conditions
     if node.group_key:
-        step += " with grouping on attribute " + parse_cond("Group Key", node.group_key, table_subquery_name_pair) 
+        step += " with grouping on attribute " + parse_cond("Group Key", node.group_key, table_subquery_name_pair)
     if node.table_filter:
         step += " and filtering on " + parse_cond("Table Filter", node.table_filter, table_subquery_name_pair)
     if node.join_filter:
-        step += " while filtering on " + parse_cond("Join Filter", node.join_filter, table_subquery_name_pair) 
+        step += " while filtering on " + parse_cond("Join Filter", node.join_filter, table_subquery_name_pair)
 
     # set intermediate table name
     if increment:
@@ -420,12 +426,12 @@ def to_text(node, skip=False):
     node.set_step(cur_step)
     cur_step += 1
 
-    steps.append(step) 
+    steps.append(step)
 
 
-def random_word(length):
-    letters = string.ascii_lowercase
-    return ''.join(random.choice(letters) for _ in range(length))
+# def random_word(length):
+#     letters = string.ascii_lowercase
+#     return ''.join(random.choice(letters) for _ in range(length))
 
 # Phase 4
 # def vocalize(steps):
@@ -470,7 +476,7 @@ def get_text(json_file):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--json_file',  type=str, default='./', help='the json generated file for vocalization')
+    parser.add_argument('--json_file', type=str, default='./', help='the json generated file for vocalization')
     args = parser.parse_args()
     steps = get_text(args.json_file)
     # vocalize(steps)
