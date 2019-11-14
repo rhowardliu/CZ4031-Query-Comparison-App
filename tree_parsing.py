@@ -71,6 +71,11 @@ def create_cluster_dict(clusters):
       cluster_dic[node] = i
   return cluster_dic
 
+def print_cluster_dict(cluster_dict):
+  return_list = []
+  for k,v in cluster_dict.items():
+    return_list.append(f'{str(k)}: {v}')
+  return ', '.join(return_list)
 
 def get_tree_differences(root, cluster_dict):
   all_nodes = [] 
@@ -85,7 +90,7 @@ def get_tree_differences(root, cluster_dict):
 
 def print_tree_difference(diff_a, diff_b):
   plan_1 = "Plan 1 has "
-  plan_2 = "Plan 2 has"
+  plan_2 = "Plan 2 has "
   for node in diff_a:
     plan_1 += str(node) + ', '
   for node in diff_b:

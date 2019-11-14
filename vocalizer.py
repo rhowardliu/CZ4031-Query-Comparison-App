@@ -59,15 +59,15 @@ class Node(object):
     def __eq__(self, other):
         if isinstance(other, self.__class__):
             return self.node_type == other.node_type and self.group_key == other.group_key \
-            and self.sort_key == other.sort_key 
+            and self.sort_key == other.sort_key and self.relation_name == other.relation_name
         else:
             return False
 
     def __hash__(self):
-        return hash((self.node_type, self.group_key, self.sort_key))
+        return hash((str(self.node_type), str(self.group_key), str(self.sort_key), str(self.relation_name)))
 
     def __str__(self):
-        return f"{str(self.node_type)} on {str(self.group_key)} and {str(self.sort_key)}"
+        return f"{str(self.node_type)} on {str(self.group_key)} and {str(self.sort_key)} and {str(self.relation_name)}\n"
 
 # Phase 1
 def parse_json(json_obj):
@@ -121,7 +121,7 @@ def parse_json(json_obj):
             else:
                 subplan_name = current_plan['Subplan Name']
 
-        current_node = Node(current_plan['Node Type'], relation_name, schema, alias, group_key, sort_key, join_type,
+        current_node = Node(current_plan['Node Type'],  group_key, sort_key, relation_name, schema, alias, join_type,
                             index_name, hash_cond, table_filter, index_cond, merge_cond, recheck_cond, join_filter,
                             subplan_name, actual_rows, actual_time)
 

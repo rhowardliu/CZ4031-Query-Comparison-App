@@ -196,7 +196,16 @@ class TreeParseTest(unittest.TestCase):
     node_b1 = v.parse_json(sr.q3)
  
     my_cluster = Cluster(get_cluster_set(node_a1, node_b1, set()))
-    # print(f'my cluster is {my_cluster}')
+    print(f'my cluster is {my_cluster}')
+
+    all_nodes = []
+    node_a1 = v.parse_json(sr.q3)
+    level_traversal(node_a1, 0, all_nodes)
+    i = 0
+    for level in all_nodes:
+      for node in level:
+        print(i, str(node))
+      i += 1
     # self.assertEqual(correct_cluster, my_cluster)
     self.assertTrue(node_a1==node_b1)
     self.assertTrue(node_a1.children[0]==node_b1.children[0])
@@ -236,13 +245,13 @@ class TreeParseTest(unittest.TestCase):
     diff_root = v.parse_json(sr.q3_fake)
     my_cluster = parse_tree(root, diff_root)
     cluster_dict = create_cluster_dict(my_cluster)
-    print(str(my_cluster[0]), 'SPACE', str(my_cluster[1]))
+    # print(print_cluster_dict(cluster_dict))
     diff_1 = get_tree_differences(root, cluster_dict)
-    print(diff_1)
+    # print(diff_1)
     diff_2 = get_tree_differences(diff_root, cluster_dict)
-    print(diff_2)
+    # print(diff_2)
     diff_text = print_tree_difference(diff_1, diff_2)
-    print(diff_text)
+    # print(diff_text)
 
 if __name__ == '__main__':
   unittest.main()
