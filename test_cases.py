@@ -4,6 +4,7 @@ from cluster_class import Cluster
 from vocalizer import Node
 import vocalizer as v
 import sql_results as sr
+import edited_sql_results as esr
 
 
 # class Node(v.Node):
@@ -227,6 +228,21 @@ class TreeParseTest(unittest.TestCase):
     cluster_dict = create_cluster_dict(my_cluster)
     diffs = get_tree_differences(root,cluster_dict)
     self.assertEqual(len(diffs),1)
+
+  def test_small_diff(self):
+    root = v.parse_json(sr.q3)
+    diff_root = v.parse_json(esr.q3_1)
+    my_cluster = parse_tree(root, diff_root)
+    cluster_dict = create_cluster_dict(my_cluster)
+    diff_a = get_tree_differences(root,cluster_dict)
+    diff_b = get_tree_differences(diff_root,cluster_dict)
+    for node in diff_a:
+        print(node)
+
+    print('===')
+    for node in diff_b:
+        print(node)
+    # self.assertEqual(len(diffs),1)
 
 if __name__ == '__main__':
   unittest.main()
