@@ -195,22 +195,22 @@ class TreeParseTest(unittest.TestCase):
   def test_cluster_json(self):
     node_a1 = v.parse_json(sr.q3)
     node_b1 = v.parse_json(sr.q3)
- 
-    my_cluster = Cluster(get_cluster_set(node_a1, node_b1, set()))
-    print(f'my cluster is {my_cluster}')
 
+    my_cluster = Cluster(get_cluster_set(node_a1, node_b1, set()))
+    # print(f'my cluster is {my_cluster}')
     all_nodes = []
     node_a1 = v.parse_json(sr.q3)
     level_traversal(node_a1, 0, all_nodes)
     i = 0
+    print('Level | Node')
     for level in all_nodes:
       for node in level:
-        print(i, str(node))
+        print(f'{i} {str(node)}')
       i += 1
     # self.assertEqual(correct_cluster, my_cluster)
     self.assertTrue(node_a1==node_b1)
     self.assertTrue(node_a1.children[0]==node_b1.children[0])
-    self.assertEqual(len(my_cluster), 10)
+    self.assertEqual(len(my_cluster), 12)
   
   def test_level_traversal(self):
     all_nodes = []

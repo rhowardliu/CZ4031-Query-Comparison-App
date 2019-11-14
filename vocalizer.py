@@ -36,6 +36,7 @@ class Node(object):
         # extra
         self.visited = False
         self.parent = None
+        self.partial_mode = None
 
     def add_children(self, child):
         self.children.append(child)
@@ -60,7 +61,7 @@ class Node(object):
         # checks
         attributes_to_compare = ['node_type', 'relation_name', 'group_key', \
             'sort_key', 'join_type', 'index_name', 'hash_cond', 'table_filter', \
-            'merge_cond', 'recheck_cond', 'join_filter']
+            'merge_cond', 'recheck_cond', 'join_filter', 'partial_mode']
 
         for attribute in attributes_to_compare:
             if getattr(self, attribute) != getattr(other, attribute):
@@ -71,10 +72,16 @@ class Node(object):
     def __hash__(self):
         attributes = ['node_type', 'relation_name', 'group_key', \
             'sort_key', 'join_type', 'index_name', 'hash_cond', 'table_filter', \
-            'merge_cond', 'recheck_cond', 'join_filter']
+            'merge_cond', 'recheck_cond', 'join_filter', 'partial_mode']
         
         hash_list = []
         for attr in attributes:
+            if attr == 'group_key' or attr == 'sort_key':
+                # group and sort keys are lists. Change to tuple before append
+                tmp = getattr(self, attr)
+                if tmp:
+                    hash_list.append(tuple(tmp))
+                    continue
             hash_list.append(getattr(self, attr))
 
         return hash(tuple(hash_list))
@@ -159,6 +166,9 @@ def parse_json(json_obj):
                 current_node.set_output_name(alias)
             else:
                 current_node.set_output_name(relation_name)
+
+        if "Aggregate" in current_node.node_type:
+            current_node.partial_mode = current_plan['Partial Mode']
 
         if parent_node is not None:
             parent_node.add_children(current_node)
