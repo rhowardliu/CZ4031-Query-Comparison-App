@@ -1,11 +1,10 @@
 import unittest
-from tree_parsing import *
-from cluster_class import Cluster
-from vocalizer import Node
-import vocalizer as v
-import sql_results as sr
-import edited_sql_results as esr
-
+from src.controller.tree_parsing import *
+from src.controller.cluster_class import Cluster
+from src.controller.node_class import Node
+import src.controller.node_class as n
+import src.test.sql_results as sr
+import src.test.edited_sql_results as esr
 
 # class Node(v.Node):
 
@@ -196,13 +195,13 @@ class TreeParseTest(unittest.TestCase):
 
     def test_cluster_json(self):
         print('--- Cluster JSON ---')
-        node_a1 = v.parse_json(sr.q3)
-        node_b1 = v.parse_json(sr.q3)
+        node_a1 = n.parse_json(sr.q3)
+        node_b1 = n.parse_json(sr.q3)
 
         my_cluster = Cluster(get_cluster_set(node_a1, node_b1, set()))
         # print(f'my cluster is {my_cluster}')
         all_nodes = []
-        node_a1 = v.parse_json(sr.q3)
+        node_a1 = n.parse_json(sr.q3)
         level_traversal(node_a1, 0, all_nodes)
         i = 0
         print('Level | Node')
@@ -218,7 +217,7 @@ class TreeParseTest(unittest.TestCase):
     def test_level_traversal(self):
         print('--- Level Traversal ---')
         all_nodes = []
-        node_a1 = v.parse_json(sr.q3)
+        node_a1 = n.parse_json(sr.q3)
         level_traversal(node_a1, 0, all_nodes)
         self.assertEqual(len(all_nodes), 10)
         correct_node_num = [1, 1, 1, 1, 1, 1, 1, 2, 2, 1]
@@ -228,7 +227,7 @@ class TreeParseTest(unittest.TestCase):
     def test_same_tree(self):
         print('--- Same Tree ---')
         # test if trees same is there diff
-        root = v.parse_json(sr.q3)
+        root = n.parse_json(sr.q3)
         my_cluster = parse_tree(root, root)
         # print(f'my cluster is {my_cluster}')
         cluster_dict = create_cluster_dict(my_cluster)
@@ -239,8 +238,8 @@ class TreeParseTest(unittest.TestCase):
     def test_diff_tree(self):
         print('--- Different Tree ---')
         # test if trees diff is there diff
-        root = v.parse_json(sr.q3)
-        diff_root = v.parse_json(sr.q3_fake)
+        root = n.parse_json(sr.q3)
+        diff_root = n.parse_json(sr.q3_fake)
         my_cluster = parse_tree(root, diff_root)
         # print(f'my cluster is {my_cluster}')
         cluster_dict = create_cluster_dict(my_cluster)
@@ -249,8 +248,8 @@ class TreeParseTest(unittest.TestCase):
 
     def test_print_tree_diff(self):
         print('--- Print Tree Difference ---')
-        root = v.parse_json(sr.q3)
-        diff_root = v.parse_json(sr.q3_fake)
+        root = n.parse_json(sr.q3)
+        diff_root = n.parse_json(sr.q3_fake)
         my_cluster = parse_tree(root, diff_root)
         cluster_dict = create_cluster_dict(my_cluster)
         # print(print_cluster_dict(cluster_dict))
@@ -263,8 +262,8 @@ class TreeParseTest(unittest.TestCase):
 
     def test_small_diff(self):
         print('--- Small Difference ---')
-        root = v.parse_json(sr.q3)
-        diff_root = v.parse_json(esr.q3_1)
+        root = n.parse_json(sr.q3)
+        diff_root = n.parse_json(esr.q3_1)
         my_cluster = parse_tree(root, diff_root)
         cluster_dict = create_cluster_dict(my_cluster)
         diff_a = get_tree_differences(root, cluster_dict)

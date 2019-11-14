@@ -1,6 +1,6 @@
 import queue
 # import pdb
-from cluster_class import Cluster
+from src.controller.cluster_class import Cluster
 
 
 def level_traversal(root, level, all_nodes):

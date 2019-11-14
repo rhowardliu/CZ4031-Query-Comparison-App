@@ -6,7 +6,7 @@ class DB_Manager(object):
     def __init__(self):
         super(DB_Manager, self).__init__()
         config = configparser.ConfigParser()
-        config.read('./config.ini')
+        config.read('./src/database/dbconfig.ini')
         pg_config = config['postgres']
         self.conn = psycopg2.connect(host=pg_config['host'], database=pg_config['database'], user=pg_config['user'], password=pg_config['password'])
         self.cur = self.conn.cursor()

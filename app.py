@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-import control
+from src.controller import control
 
 
 class Ui_Dialog(object):
