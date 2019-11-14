@@ -95,4 +95,4 @@ def print_tree_difference(diff_a, diff_b):
     plan_1 += str(node) + ', '
   for node in diff_b:
     plan_2 += str(node) + ', '
-  return plan_1 + plan_2       
+  return plan_1 + '\n' + plan_2       

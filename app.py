@@ -1,12 +1,5 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'GUI_design.ui'
-#
-# Created by: PyQt5 UI code generator 5.9.2
-#
-# WARNING! All changes made in this file will be lost!
-
 from PyQt5 import QtCore, QtGui, QtWidgets
+import control
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
@@ -89,6 +82,9 @@ class Ui_Dialog(object):
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
+        self.my_control = control.Control()
+        self.pushButton.clicked.connect(self.onClickButton)
+
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
@@ -98,6 +94,13 @@ class Ui_Dialog(object):
         self.label_5.setText(_translate("Dialog", "Difference"))
         self.pushButton.setToolTip(_translate("Dialog", "<html><head/><body><p align=\"center\"><br/></p></body></html>"))
         self.pushButton.setText(_translate("Dialog", "Get Plan"))
+
+    def onClickButton(self):
+        query1 = self.plainTextEdit.toPlainText()
+        query2 = self.textEdit.toPlainText()
+        diff_string = self.my_control.generate_differences(query1, query2)
+        self.textBrowser_3.setText(diff_string)
+
 
 
 if __name__ == "__main__":
