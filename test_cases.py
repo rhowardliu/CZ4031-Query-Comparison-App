@@ -215,19 +215,34 @@ class TreeParseTest(unittest.TestCase):
     # test if trees same is there diff
     root = v.parse_json(sr.q3)
     my_cluster = parse_tree(root, root)
-    print(f'my cluster is {my_cluster}')
+    # print(f'my cluster is {my_cluster}')
     cluster_dict = create_cluster_dict(my_cluster)
     diffs = get_tree_differences(root,cluster_dict)
     self.assertEqual(len(diffs),0)
+    # assert cluster dict
 
     # test if trees diff is there diff
+    root = v.parse_json(sr.q3)
     diff_root = v.parse_json(sr.q3_fake)
     my_cluster = parse_tree(root, diff_root)
-    print(f'my cluster is {my_cluster}')
+    # print(f'my cluster is {my_cluster}')
     cluster_dict = create_cluster_dict(my_cluster)
     diffs = get_tree_differences(root,cluster_dict)
     print(diffs)
     self.assertEqual(len(diffs),1)
+
+  def test_print_tree_diff(self):
+    root = v.parse_json(sr.q3)
+    diff_root = v.parse_json(sr.q3_fake)
+    my_cluster = parse_tree(root, diff_root)
+    cluster_dict = create_cluster_dict(my_cluster)
+    print(str(my_cluster[0]), 'SPACE', str(my_cluster[1]))
+    diff_1 = get_tree_differences(root, cluster_dict)
+    print(diff_1)
+    diff_2 = get_tree_differences(diff_root, cluster_dict)
+    print(diff_2)
+    diff_text = print_tree_difference(diff_1, diff_2)
+    print(diff_text)
 
 if __name__ == '__main__':
   unittest.main()

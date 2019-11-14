@@ -81,4 +81,13 @@ def get_tree_differences(root, cluster_dict):
       if node not in cluster_dict.keys():
         diff_nodes.append(node)
   return diff_nodes
-         
+
+
+def print_tree_difference(diff_a, diff_b):
+  plan_1 = "Plan 1 has "
+  plan_2 = "Plan 2 has"
+  for node in diff_a:
+    plan_1 += str(node) + ', '
+  for node in diff_b:
+    plan_2 += str(node) + ', '
+  return plan_1 + plan_2       
