@@ -74,6 +74,7 @@ def print_clusters(clusters):
 
 class TreeParseTest(unittest.TestCase):
   def test_get_cluster_set(self):
+    print('--- Get Cluster Set ---')
     node_a1 = Node('merge_join', 'id')
     node_a2 = Node('single_scan', 'id')
     node_a3 = Node('filter', 'id')
@@ -99,6 +100,7 @@ class TreeParseTest(unittest.TestCase):
     self.assertEqual(correct_cluster, my_cluster)
 
   def test_parse_tree(self):
+    print('--- Parse Tree ---')
     node_a1 = Node('merge_join', 'id')
     node_a2 = Node('merge_join', 'age')
     node_a3 = Node('filter', 'age')
@@ -131,6 +133,7 @@ class TreeParseTest(unittest.TestCase):
     self.assertEqual(correct_clusters, my_cluster_sets)
 
   def test_cluster_object(self):
+    print('--- Cluster Object ---')
     node_a1 = Node('merge_join', 'id')
     node_a2 = Node('single_scan', 'id')
     node_a3 = Node('filter', 'id')
@@ -155,6 +158,7 @@ class TreeParseTest(unittest.TestCase):
     self.assertEqual(len(my_cluster), 4)
 
   def test_cluster_dict(self):
+    print('--- Cluster Dictionary ---')
     node_a1 = Node('merge_join', 'id')
     node_a2 = Node('merge_join', 'age')
     node_a3 = Node('filter', 'age')
@@ -193,6 +197,7 @@ class TreeParseTest(unittest.TestCase):
     self.assertEqual(clusterdict[node_b5], 2)
 
   def test_cluster_json(self):
+    print('--- Cluster JSON ---')
     node_a1 = v.parse_json(sr.q3)
     node_b1 = v.parse_json(sr.q3)
 
@@ -213,6 +218,7 @@ class TreeParseTest(unittest.TestCase):
     self.assertEqual(len(my_cluster), 12)
   
   def test_level_traversal(self):
+    print('--- Level Traversal ---')
     all_nodes = []
     node_a1 = v.parse_json(sr.q3)
     level_traversal(node_a1, 0, all_nodes)
@@ -222,6 +228,7 @@ class TreeParseTest(unittest.TestCase):
       self.assertEqual(len(all_nodes[i]),correct_node_num[i])
 
   def test_same_tree(self):
+    print('--- Same Tree ---')
     # test if trees same is there diff
     root = v.parse_json(sr.q3)
     my_cluster = parse_tree(root, root)
@@ -232,6 +239,7 @@ class TreeParseTest(unittest.TestCase):
     # assert cluster dict
 
   def test_diff_tree(self):
+    print('--- Different Tree ---')
     # test if trees diff is there diff
     root = v.parse_json(sr.q3)
     diff_root = v.parse_json(sr.q3_fake)
@@ -242,6 +250,7 @@ class TreeParseTest(unittest.TestCase):
     self.assertEqual(len(diffs),1)
 
   def test_print_tree_diff(self):
+    print('--- Print Tree Difference ---')
     root = v.parse_json(sr.q3)
     diff_root = v.parse_json(sr.q3_fake)
     my_cluster = parse_tree(root, diff_root)
@@ -255,16 +264,18 @@ class TreeParseTest(unittest.TestCase):
     # print(diff_text)
 
   def test_small_diff(self):
+    print('--- Small Difference ---')
     root = v.parse_json(sr.q3)
     diff_root = v.parse_json(esr.q3_1)
     my_cluster = parse_tree(root, diff_root)
     cluster_dict = create_cluster_dict(my_cluster)
     diff_a = get_tree_differences(root,cluster_dict)
     diff_b = get_tree_differences(diff_root,cluster_dict)
+    print('Diff A:')
     for node in diff_a:
         print(node)
 
-    print('===')
+    print('Diff B:')
     for node in diff_b:
         print(node)
     # self.assertEqual(len(diffs),1)

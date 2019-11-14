@@ -88,17 +88,78 @@ class Node(object):
 
     def __str__(self):
         s = ''
+        # Index Scan, Seq Scan
         if 'Scan' in self.node_type:
             s += f'{self.node_type} on relation "{self.relation_name}"'
             if self.table_filter:
                 s += f', with filter {self.table_filter}'
             return s
 
+        # Hash Join, Merge Join
         if 'Join' in self.node_type:
-            pass
+            if 'Hash' in self.node_type:
+                s += f'{self.node_type} (type: {self.join_type}) with Hash Condition {self.hash_cond}'
+            elif 'Merge' in self.node_type:
+                s += f'{self.node_type} (type: {self.join_type}) with Merge Condition {self.merge_cond}'
 
-        return f"{str(self.node_type)} on {str(self.group_key)} and {str(self.sort_key)}"
+            if self.join_filter:
+                s += f' and Join Filter {self.join_filter}'
 
+            return s
+
+        # Nested Loop Join
+        if self.node_type == 'Nested Loop':
+            s += f'{self.node_type} Join (type: {self.join_type})'
+
+            if self.hash_cond:
+                s += f' with Hash Condition {self.hash_cond}'
+
+            s += f' on the results from a {self.children[0].node_type} and a {self.children[1].node_type}'
+
+            return s
+
+        # Sort
+        if self.node_type == 'Sort':
+            return f'Sort on sort keys {self.sort_key}'
+
+        # Limit
+        if self.node_type == 'Limit':
+            return f'Limit results to {self.plan_rows} rows'
+
+
+        # Bitmap Heap Scan
+        if self.node_type == 'Bitmap Heap Scan':
+            return 'Bitmap Heap Scan'
+
+        # Bitmap Index Scan
+        if 'Bitmap Index Scan' in self.node_type:
+            return f'Bitmap Index Scan with index condition {self.recheck_cond}'
+
+        # Unique
+        if self.node_type == 'Unique':
+            return 'Unique operation'
+
+        # Aggregate
+        if self.node_type == 'Aggregate':
+            s += f'Aggregate'
+            if self.partial_mode:
+                s += f' ({self.partial_mode})'
+            s += f' on results from a {self.children[0].node_type}'
+            if len(self.children) > 1:
+                s += f' and a {self.children[1].node_type}'
+
+            return s
+
+        # Base Case
+        s += f"{str(self.node_type)}"
+        if len(self.children) > 0:
+            s += f' on results from a {self.children[0].node_type}'
+
+        if len(self.children) > 1:
+            s += f' and a {self.children[1].node_type}'
+
+        return s
+        
 # Phase 1
 def parse_json(json_obj):
     q = queue.Queue()
@@ -237,7 +298,7 @@ def to_text(node, skip=False):
             pass
         
         if "Hash" in node.node_type:
-            step += " and perform " + node.node_type.lower() + " on "
+            step += " and " + node.node_type.lower() + " on "
             for i, child in enumerate(node.children):
                 if child.node_type == "Hash":
                     child.set_output_name(child.children[0].get_output_name())
@@ -250,8 +311,8 @@ def to_text(node, skip=False):
             step = "hash table " + hashed_table + step + " under condition " + parse_cond("Hash Cond", node.hash_cond, table_subquery_name_pair)
         
         elif "Merge" in node.node_type:
-            step += "perform " + node.node_type.lower() + " on "
-            any_sort = False  # whether sort is performed on any table
+            step += "" + node.node_type.lower() + " on "
+            any_sort = False  # whether sort is d on any table
             for i, child in enumerate(node.children):
                 if child.node_type == "Sort":
                     child.set_output_name(child.children[0].get_output_name())
@@ -277,13 +338,13 @@ def to_text(node, skip=False):
             node.children[0].set_output_name(node.relation_name)
             step = " with index condition " + parse_cond("Recheck Cond", node.recheck_cond, table_subquery_name_pair)
             
-        step = "perform bitmap heap scan on table " + node.children[0].get_output_name() + step
+        step = "bitmap heap scan on table " + node.children[0].get_output_name() + step
 
     elif "Scan" in node.node_type:
         if node.node_type == "Seq Scan":
-            step += "perform sequential scan on table "         
+            step += "sequential scan on table "         
         else:
-            step += "perform " + node.node_type.lower() + " on table " 
+            step += "" + node.node_type.lower() + " on table " 
 
         step += node.get_output_name()
 
@@ -301,7 +362,7 @@ def to_text(node, skip=False):
             else:
                 step += " and "
 
-        step += "perform unique on table " + node.children[0].get_output_name()
+        step += "unique on table " + node.children[0].get_output_name()
 
     elif node.node_type == "Aggregate":
         for child in node.children:
@@ -312,22 +373,22 @@ def to_text(node, skip=False):
             # combine aggregate with scan
             if "Scan" in child.node_type:
                 if child.node_type == "Seq Scan":
-                    step = "perform sequential scan on " + child.get_output_name() + " and "
+                    step = "sequential scan on " + child.get_output_name() + " and "
                 else:
-                    step = "perform " + child.node_type.lower() + " on " + child.get_output_name() + " and "
+                    step = "" + child.node_type.lower() + " on " + child.get_output_name() + " and "
 
-        step += "perform aggregate on table " + node.children[0].get_output_name() 
+        step += "aggregate on table " + node.children[0].get_output_name() 
         if len(node.children) == 2:
             step += " and table " + node.children[1].get_output_name()
 
     elif node.node_type == "Sort":
-        step += "perform sort on table " + node.children[0].get_output_name() + " with attribute " + parse_cond("Sort Key", node.sort_key, table_subquery_name_pair) 
+        step += "sort on table " + node.children[0].get_output_name() + " with attribute " + parse_cond("Sort Key", node.sort_key, table_subquery_name_pair) 
 
     elif node.node_type == "Limit":
         step += "limit the result from table " + node.children[0].get_output_name() + " to " + str(node.plan_rows) + " record(s)"
     
     else:
-        step += "perform " + node.node_type.lower() + " on"
+        step += "" + node.node_type.lower() + " on"
         # binary operator
         if len(node.children) > 1:
             for i, child in enumerate(node.children):
