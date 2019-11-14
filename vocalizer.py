@@ -57,14 +57,27 @@ class Node(object):
 
     ## extra
     def __eq__(self, other):
-        if isinstance(other, self.__class__):
-            return self.node_type == other.node_type and self.group_key == other.group_key \
-            and self.sort_key == other.sort_key 
-        else:
-            return False
+        # checks
+        attributes_to_compare = ['node_type', 'relation_name', 'group_key', \
+            'sort_key', 'join_type', 'index_name', 'hash_cond', 'table_filter', \
+            'merge_cond', 'recheck_cond', 'join_filter']
+
+        for attribute in attributes_to_compare:
+            if getattr(self, attribute) != getattr(other, attribute):
+                return False
+
+        return True
 
     def __hash__(self):
-        return hash((self.node_type, self.group_key, self.sort_key))
+        attributes = ['node_type', 'relation_name', 'group_key', \
+            'sort_key', 'join_type', 'index_name', 'hash_cond', 'table_filter', \
+            'merge_cond', 'recheck_cond', 'join_filter']
+        
+        hash_list = []
+        for attr in attributes:
+            hash_list.append(getattr(self, attr))
+
+        return hash(tuple(hash_list))
 
     def __str__(self):
         return f"{str(self.node_type)} on {str(self.group_key)} and {str(self.sort_key)}"
