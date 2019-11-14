@@ -88,7 +88,7 @@ class Node(object):
             return s
 
         if 'Join' in self.node_type:
-            
+            pass
 
         return f"{str(self.node_type)} on {str(self.group_key)} and {str(self.sort_key)}"
 
