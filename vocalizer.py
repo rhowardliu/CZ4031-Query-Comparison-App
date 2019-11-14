@@ -80,6 +80,16 @@ class Node(object):
         return hash(tuple(hash_list))
 
     def __str__(self):
+        s = ''
+        if 'Scan' in self.node_type:
+            s += f'{self.node_type} on relation "{self.relation_name}"'
+            if self.table_filter:
+                s += f', with filter {self.table_filter}'
+            return s
+
+        if 'Join' in self.node_type:
+            
+
         return f"{str(self.node_type)} on {str(self.group_key)} and {str(self.sort_key)}"
 
 # Phase 1
