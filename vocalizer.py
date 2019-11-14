@@ -144,7 +144,7 @@ def parse_json(json_obj):
             else:
                 subplan_name = current_plan['Subplan Name']
 
-        current_node = Node(current_plan['Node Type'], relation_name, schema, alias, group_key, sort_key, join_type,
+        current_node = Node(current_plan['Node Type'],  group_key, sort_key, relation_name, schema, alias, join_type,
                             index_name, hash_cond, table_filter, index_cond, merge_cond, recheck_cond, join_filter,
                             subplan_name, actual_rows, actual_time)
 
