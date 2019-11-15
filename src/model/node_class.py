@@ -1,4 +1,5 @@
 from __future__ import print_function
+import re
 import argparse
 import copy
 import queue
@@ -86,7 +87,7 @@ class Node(object):
             s += f'{self.node_type} on relation "{self.relation_name}"'
             if self.table_filter:
                 s += f', with filter {self.table_filter}'
-            return s
+            return re.sub(r'::(.+?)\)', ')', s)  # remove data types
 
         # Hash Join, Merge Join
         if 'Join' in self.node_type:
@@ -98,7 +99,7 @@ class Node(object):
             if self.join_filter:
                 s += f' and Join Filter {self.join_filter}'
 
-            return s
+            return re.sub(r'::(.+?)\)', ')', s)  # remove data types
 
         # Nested Loop Join
         if self.node_type == 'Nested Loop':
@@ -109,16 +110,16 @@ class Node(object):
 
             s += f' on the results from a {self.children[0].node_type} and a {self.children[1].node_type}'
 
-            return s
+            return re.sub(r'::(.+?)\)', ')', s)  # remove data types
 
         # Sort
         if self.node_type == 'Sort':
-            return f'Sort on sort keys {self.sort_key}'
+            s = f'Sort on sort keys {self.sort_key}'
+            return re.sub(r'::(.+?)\)', ')', s)  # remove data types
 
         # Limit
         if self.node_type == 'Limit':
             return f'Limit results to {self.plan_rows} rows'
-
 
         # Bitmap Heap Scan
         if self.node_type == 'Bitmap Heap Scan':
@@ -126,7 +127,8 @@ class Node(object):
 
         # Bitmap Index Scan
         if 'Bitmap Index Scan' in self.node_type:
-            return f'Bitmap Index Scan with index condition {self.recheck_cond}'
+            s = f'Bitmap Index Scan with index condition {self.recheck_cond}'
+            return re.sub(r'::(.+?)\)', ')', s)  # remove data types
 
         # Unique
         if self.node_type == 'Unique':
