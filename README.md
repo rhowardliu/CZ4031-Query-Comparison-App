@@ -11,7 +11,7 @@ user = [username]
 password = [password]
 ```
 
-Make sure you have python 3.6 or above installed.
+Make sure you have **python 3.6 or above** installed.
 
 Install necessary packages by running this code in the project's root directory:
 ```
