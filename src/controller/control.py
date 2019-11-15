@@ -1,7 +1,7 @@
 # import psycopg2
 import src.controller.tree_parsing as tp
 from src.database.db_connect import DB_Manager
-import src.controller.node_class as n
+import src.model.node_class as n
 
 
 class Control(object):

@@ -1,15 +1,7 @@
 from __future__ import print_function
-# import logging
-# import json
 import argparse
 import copy
-# from gtts import gTTS
-# import random, string
-# from util import parse_cond
-# import pygame
-# import os
 import queue
-# from nlp import handler
 
 
 class Node(object):
