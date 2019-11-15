@@ -26,3 +26,6 @@ python app.py
 In the window that appears, write 2 SQL queries into input field 1 and 2.\
 Click `Get Plan` and wait for about 30s - 60s. \
 The query plan differences will be displayed in the Difference field.
+
+### Algorithm Explanation
+The detailed algorithm can be found in [Algorithm.md](https://github.com/rhowardliu/CZ4031-Query-Comparison-App/blob/master/Algorithm.md.
