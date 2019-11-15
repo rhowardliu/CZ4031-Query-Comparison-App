@@ -68,7 +68,7 @@ A sample parsed query looks like this:
 ```
 
 ##### Generating the Query differences
-By parsing each query dictionary, we identify the differences in key/value pairs and print out all the differences between the 2 SQL queries
+By parsing each query dictionary, we identify the differences in key/value pairs and print out all the differences between the 2 SQL queries.
 
 ### Printing the differences
 Finally, the algorithm uses basic rule based formatting to print out different statements in the following format:
