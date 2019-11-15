@@ -28,4 +28,4 @@ Click `Get Plan` and wait for about 30s - 60s. \
 The query plan differences will be displayed in the Difference field.
 
 ### Algorithm Explanation
-The detailed algorithm can be found in [Algorithm.md](https://github.com/rhowardliu/CZ4031-Query-Comparison-App/blob/master/Algorithm.md.
+The detailed algorithm can be found in [Algorithm.md](https://github.com/rhowardliu/CZ4031-Query-Comparison-App/blob/master/Algorithm.md)
