@@ -39,7 +39,11 @@ The algorithm finds clusters by checking 2 nodes and seeing if they are the same
 Then, if the nodes are the same, check that all the children nodes are the same and if they are, recursively add their children into the cluster.
 
 ##### Rationale for Clusters
-A naive way to identify differences between 2 QEPs is to check if, for every node in A, that same node exists in B. However, blindly checking for the existence of the node in the other graph is not an accurate way to determine differences. For example, 2 graphs can have the same node but in completely different places and hence these should not be identified as the same. Another example is if 2 graphs have the same few nodes but in a different order and hence should also not be identified as the same. Clusters are sensitive to the structure of the nodes and hence by using clusters, we can avoid this situation.
+A naive way to identify differences between 2 QEPs is to check if, for every node in A, that same node exists in B. However, blindly checking for the existence of the node in the other graph is not the best way to determine differences as it does not allow us compare differences that are related. As seen in the diagram, graph A has the orange node in between clusters 1 and 2 whereas Graph B has the purple and green nodes in between clusters 1 and 2. Using clusters allow us to identify and compare the transformation between different nodes, which would not have otherwise been possible in the naive implementation.
+
+<img src="https://raw.githubusercontent.com/rhowardliu/CZ4031-Query-Comparison-App/master/images/cluster2.png" width="500"/></a>
+
+Although not fully implemented in this project, the clustering algorithm provides the foundation for future work in this regard.
 
 ##### Parsing the QEP
 The algorithm starts at the root node of the 2 Query Execution Graphs, say A and B. For every node in A not in a cluster, it checks if there is a corresponding cluster with all the nodes in B not already in a cluster, using the aforementioned method above. Everytime a cluster is found, the corresponding nodes are marked and will not be checked in subsequent iterations.
@@ -47,7 +51,7 @@ The algorithm starts at the root node of the 2 Query Execution Graphs, say A and
 After the entire QEP has been parsed and the clusters generated, the algorithm creates a cluster dictionary with the key being the node and the value being the cluster number. This allows for O(1) look up.
 
 ##### Generating the QEP differences
-Once the clusters have been generated, the algorithm look through all the nodes in the 2 graphs individually and checks if each node is in any cluster using the cluster dictionary. If not, the node will be identified as a difference node for that graph plan.
+Once the clusters have been generated, the algorithm look through all the nodes in the 2 graphs individually and checks if each node is in any cluster using the cluster dictionary. If not, the node will be identified as a difference node for that graph plan. 
 
 
 ### Query Processing
@@ -55,7 +59,8 @@ Once the clusters have been generated, the algorithm look through all the nodes 
 ##### Parsing the Query
 
 ##### Generating the SQL differences
----
+
+
 ### Printing the differences
 Finally, the algorithm uses basic rule based formatting to print out different statements in the following format:
 ```
