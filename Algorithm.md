@@ -97,3 +97,63 @@ Query 1:
 Query 2:
  - WHERE clause with parameters c_mktsegment = 'HOUSEHOLD' AND c_custkey = o_custkey AND l_orderkey = o_orderkey AND o_orderdate < date '1995-03-21'
 ```
+
+## Example
+
+Here we provide an example of finding differences between 2 queries and their generated plans.
+
+Query 1
+```
+select
+ l_orderkey,
+	sum(l_extendedprice * (1 - l_discount)) as revenue,
+	o_orderdate,
+	o_shippriority
+from
+	customer,
+	orders,
+	lineitem
+where
+	c_mktsegment = 'HOUSEHOLD'
+	and c_custkey = o_custkey
+	and l_orderkey = o_orderkey
+	and o_orderdate < date '1995-03-21'
+	and l_shipdate > date '1995-03-21'
+group by
+	l_orderkey,
+	o_orderdate,
+	o_shippriority
+order by
+	revenue desc,
+	o_orderdate
+limit 10;
+```
+
+Query 2
+```
+select
+	l_orderkey,
+	sum(l_extendedprice * (1 - l_discount)) as revenue,
+	o_orderdate,
+	o_shippriority
+from
+	customer,
+	orders,
+	lineitem
+where
+	c_custkey = o_custkey
+	and l_orderkey = o_orderkey
+	and o_orderdate < date '1995-03-21'
+group by
+	l_orderkey,
+	o_orderdate,
+	o_shippriority
+order by
+	revenue desc,
+	o_orderdate
+limit 10;
+```
+
+The difference is that Query 2 is missing a couple of conditions in the WHERE clause. The image below shows a screenshot of our GUI, highlighting the differences in the Query Execution Plan and the SQL Query
+
+<img src="https://raw.githubusercontent.com/rhowardliu/CZ4031-Query-Comparison-App/master/images/Screenshot 2019-11-15 at 3.30.46 PM.png"/> 
