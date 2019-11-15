@@ -1,8 +1,8 @@
 import unittest
 from src.controller.tree_parsing import *
-from src.controller.cluster_class import Cluster
-from src.controller.node_class import Node
-import src.controller.node_class as n
+from src.model.cluster_class import Cluster
+from src.model.node_class import Node
+import src.model.node_class as n
 import src.test.sql_results as sr
 import src.test.edited_sql_results as esr
 

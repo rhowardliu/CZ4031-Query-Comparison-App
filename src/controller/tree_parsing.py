@@ -1,6 +1,6 @@
 import queue
 # import pdb
-from src.controller.cluster_class import Cluster
+from src.model.cluster_class import Cluster
 
 
 def level_traversal(root, level, all_nodes):
@@ -21,7 +21,6 @@ def get_cluster_set(a, b, cluster_grp):
         a_set = {x for x in a.children}
         b_set = {x for x in b.children}
         if a_set == b_set:
-            # no banana so ok!
             if len(a_set) == 1:
                 cluster_grp = cluster_grp.union(
                     get_cluster_set(a.children[0], b.children[0], set()))
