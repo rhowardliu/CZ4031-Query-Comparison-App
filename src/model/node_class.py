@@ -1,6 +1,3 @@
-from __future__ import print_function
-import argparse
-import copy
 import queue
 
 
@@ -240,9 +237,3 @@ def parse_json(json_obj):
                 q_node.put(current_node)
 
     return head_node
-
-
-if __name__ == '__main__':
-    args = parser.parse_args()
-    steps = get_text(args.json_file)
-    # vocalize(steps)
