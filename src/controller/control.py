@@ -1,5 +1,6 @@
 # import psycopg2
 import src.controller.tree_parsing as tp
+import src.controller.sql_parsing as sp
 from src.database.db_connect import DB_Manager
 import src.model.node_class as n
 
@@ -22,7 +23,9 @@ class Control(object):
         cluster_dict = tp.create_cluster_dict(clusters)
         diff_1 = tp.get_tree_differences(p_1, cluster_dict)
         diff_2 = tp.get_tree_differences(p_2, cluster_dict)
-        diff_statement = tp.print_tree_difference(diff_1, diff_2)
+        tree_diff_statement = tp.print_tree_difference(diff_1, diff_2)
+        query_diff_statememt = sp.print_query_difference(query_1, query_2)
+        diff_statement = tree_diff_statement + '\n\n\nThis can be explained by the differences in queries:\n\n' + query_diff_statememt
         print(diff_statement)
         return diff_statement
 
