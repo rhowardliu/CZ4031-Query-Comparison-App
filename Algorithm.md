@@ -57,9 +57,18 @@ Once the clusters have been generated, the algorithm look through all the nodes 
 ### Query Processing
 
 ##### Parsing the Query
+We make use of the `sqlparse` library to parse the SQL queries. We parse out the top level keywords such as `SELECT` and `WHERE`, and partition the query into dictionaries.
 
-##### Generating the SQL differences
+A sample parsed query looks like this:
+```
+{'SELECT': 'sum(l_extendedprice * l_discount) AS revenue',
+ 'FROM': 'lineitem',
+ 'WHERE': "l_shipdate >= date '1995-01-01' AND l_shipdate < date '1995-01-01' + interval '1' YEAR AND l_discount BETWEEN 0.09 - 0.01 AND 0.09 + 0.01 AND l_quantity < 24 ",
+ 'LIMIT': '1'}
+```
 
+##### Generating the Query differences
+By parsing each query dictionary, we identify the differences in key/value pairs and print out all the differences between the 2 SQL queries
 
 ### Printing the differences
 Finally, the algorithm uses basic rule based formatting to print out different statements in the following format:
