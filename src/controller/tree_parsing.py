@@ -1,5 +1,4 @@
 import queue
-# import pdb
 from src.model.cluster_class import Cluster
 
 
@@ -68,6 +67,7 @@ def parse_tree(A_root, B_root):
             if cluster_set:
                 clustered = Cluster(cluster_set)
                 clusters.append(clustered)
+                break
     return clusters
 
 
