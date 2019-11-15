@@ -99,10 +99,15 @@ def get_tree_differences(root, cluster_dict):
 
 
 def print_tree_difference(diff_a, diff_b):
-    plan_1 = "Plan 1 has "
-    plan_2 = "Plan 2 has "
+    if len(diff_a) == len(diff_b) == 0:
+        return 'No difference in query plans.'
+
+    plan_1 = 'Plan 1 has'
+    plan_2 = 'While Plan 2 has'
     for node in diff_a:
-        plan_1 += str(node) + ', '
+        plan_1 += f'\n    -{str(node)}'
+        # plan_1 += str(node) + ', '
     for node in diff_b:
-        plan_2 += str(node) + ', '
-    return plan_1 + '\n' + plan_2
+        plan_2 += f'\n    -{str(node)}'
+        # plan_2 += str(node) + ', '
+    return plan_1 + '\n\n' + plan_2
