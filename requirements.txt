@@ -1,4 +1,4 @@
 psycopg2==2.8.4
 PyQt5==5.13.2
 PyQt5-sip==12.7.0
-sqlparse==0.3.0
+sqlparse==0.4.4
